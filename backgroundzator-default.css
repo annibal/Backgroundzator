@@ -1,0 +1,95 @@
+#body-stuff-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 5;
+}
+
+#background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+.background-lavender {
+    background-color: rgb(212,184,254);
+    background-blend-mode: color-burn;
+    opacity: 0.5;
+}
+
+.background-sunset {
+    background-color: rgb(121, 57, 3);
+    background-blend-mode: color-dodge;
+    opacity: 0.8;
+}
+
+.background-sepia {
+    background-color: rgb(111, 61, 9);
+    background-blend-mode: luminosity;
+    opacity: 0.7;
+}
+
+.background-soulish {
+    background-color: rgb(75, 0, 255);
+    background-blend-mode: hard-light;
+    opacity: 1;
+}
+
+.background-blurry {
+    -webkit-filter: blur(3px);
+    -o-filter: blur(3px);
+    filter: blur(3px);
+    transform: scale(1.04);
+}
+
+@keyframes background-slow-zoom {
+    0%   {transform:scale(1.05); }
+    100% {transform:scale(1.12); }
+}
+/* 1 second = .01 % */
+.background-zoomy {
+    animation-name: background-slow-zoom;
+    animation-direction: normal;
+    animation-duration: 7s; /* total: slideTime + slideTransitionTime */
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes background-unblur {
+    0%   {
+        -webkit-filter: blur(0px);
+        -o-filter: blur(0px);
+        filter: blur(0px);
+    }
+    10%   {
+        -webkit-filter: blur(10px);
+        -o-filter: blur(10px);
+        filter: blur(10px);
+    }
+    40%   {
+        -webkit-filter: blur(0px);
+        -o-filter: blur(0px);
+        filter: blur(0px);
+    }
+    100%   {
+        -webkit-filter: blur(0px);
+        -o-filter: blur(0px);
+        filter: blur(0px);
+    }
+}
+.background-unblur {
+    animation-name: background-unblur;
+    animation-direction: normal;
+    animation-duration: 7s; /* total: slideTime + slideTransitionTime */
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}

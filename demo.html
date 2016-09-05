@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="us-en" ng-app="backgroundzator-demo">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Backgroundzator Demo</title>
+
+        <style>
+            body {
+                font-family: sans-serif;
+            }
+            .text-center {
+                text-align: center;
+            }
+
+            .heading {
+                color: rgba(255,255,255,0.8);
+                text-shadow: 0px 0px 1px rgba(255,255,255,1), 0px 1px 1px rgba(180,180,180,0.6);
+            }
+            .phantom-panels .glassy-panel {
+                background: transparent;
+            }
+            .phantom-panels .mac-key {
+                background: none;
+                box-shadow: 0px 0px 1px white;
+            }
+            #config-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                width: 100vw;
+                height: 100vh;
+                z-index: 10;
+                background: rgba(32,32,32,0.8);
+                display: none;
+            }
+            #config-modal .container {
+                position: absolute;
+            }
+            #config-modal.config-modal-show {
+                display: block;
+            }
+            label {
+                font-weight: bold;
+            }
+            input[type=text] {
+                border: 1px solid rgba(200,200,200,0.8);
+                box-shadow: 0px 1px 1px rgba(120,120,120,0.8);
+                padding: .3em;
+                padding-left: .6em;
+            }
+        </style>
+
+        <link rel="stylesheet" href="backgroundzator-default.css">
+        <link rel="stylesheet" href="flexxy.css">
+        <link rel="stylesheet" href="http://nibalan.byethost14.com/things/buttons/mac-key.css">
+
+    </head>
+    <body ng-controller="backgroundzator-controller" ng-class="phantomPanels">
+        <div id="body-stuff-container">
+            <div class="container">
+                <h1 class="text-center heading">Backgroundzator</h1>
+
+
+                <div class="row">
+                    <div class="cell">
+                        <div class="glassy-panel text-center">
+                            <a href="#" class="mac-key" ng-show="phantomPanels.length == 0" ng-click="phantomPanels='phantom-panels'">Hide Panels</a>
+                            <a href="#" class="mac-key" ng-show="phantomPanels.length > 0"  ng-click="phantomPanels=''">Show Panels</a>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="glassy-panel text-center">
+                            <a href="#" class="mac-key" onclick="bgObj.changeBackgrounds()">Next BG</a>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="glassy-panel text-center">
+                            <a href="#" class="mac-key" ng-click="configModal = 'config-modal-show'">Config</a>
+                            <a href="#" class="mac-key" onclick="bgInit()">Reset BG Object</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell small">
+                        <div class="glassy-panel text-center">
+                            <h2>Background Filter</h2>
+                            <a href="#" class="mac-key" ng-click="bgFilter=''">None</a><br />
+                            <a href="#" class="mac-key" ng-click="bgFilter='background-lavender'">Lavender</a><br />
+                            <a href="#" class="mac-key" ng-click="bgFilter='background-sunset'">Sunset</a><br />
+                            <a href="#" class="mac-key" ng-click="bgFilter='background-sepia'">Sepia</a><br />
+                            <a href="#" class="mac-key" ng-click="bgFilter='background-soulish'">Soulish</a>
+                        </div>
+                    </div>
+                    <div class="cell small">
+                        <div class="glassy-panel text-center">
+                            <h2>Background Effect</h2>
+                            <a href="#" class="mac-key" ng-click="toggleEffectNone()">None</a><br />
+                            <a href="#" class="mac-key" ng-click="toggleEffectBlurry()">Blurry</a><br />
+                            <a href="#" class="mac-key" ng-click="toggleEffectZoomy()">Zoomy</a><br />
+                            <a href="#" class="mac-key" ng-click="toggleEffectUnblur()">Un Blur</a><br />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell">
+                        <div class="glassy-panel text-center">
+                            <pre>&lt;div id="background-container" class="{{bgFilter}} {{activeFxClassList}}" &gt;&lt;/div&gt;</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="background-container" ng-class="bgFilter + activeFxClassList">
+
+        </div>
+        <div id="config-modal" ng-class="configModal">
+            <div class="container" ng-click="">
+                <br>
+                <br>
+                <br>
+                <div class="row">
+                    <div class="cell">
+                        <div class="glassy-panel">
+                            <div style="float:right">
+                                <a href="#" ng-click="configModal = ''" class="mac-key">X</a>
+                            </div>
+
+                            <label for="bgConfigSlideTime">Slide Time</label><br />
+                            <input type="text" id="bgConfigSlideTime" ng-model="bgConfig.slideTime" value="4800"><br /><br />
+
+                            <label for="bgConfigSlideTransitionTime">Slide Transition Time</label><br />
+                            <input type="text" id="bgConfigSlideTransitionTime" ng-model="bgConfig.slideTransitionTime" value="2200"><br /><br />
+
+                            <label for="bgConfigSlideTransitionFunction">Slide Transition Function</label><br />
+                            <input type="text" id="bgConfigSlideTransitionFunction" ng-model="bgConfig.slideTransitionFunction" value="ease"><br /><br />
+
+                            <label for="bgConfigRandom">Random</label><br />
+                            <input type="checkbox" id="bgConfigRandom" ng-model="bgConfig.random"><br /><br />
+
+                            <label for="bgConfigMobileWidth">Mobile Width</label><br />
+                            <input type="text" id="bgConfigMobileWidth" ng-model="bgConfig.mobileWidth"><br /><br />
+
+                            <label for="bgConfigforceBackgroundContain">Force Background Contain</label><br />
+                            <input type="checkbox" id="bgConfigforceBackgroundContain" ng-model="bgConfig.forceBackgroundContain"><br /><br />
+
+                            <label for="bgConfigPrecache">Precache</label><br />
+                            <input type="checkbox" id="bgConfigPrecache" ng-model="bgConfig.precache"><br /><br />
+
+                            <label for="bgConfigPrecacheAll">Precache All</label><br />
+                            <input type="checkbox" id="bgConfigPrecacheAll" ng-model="bgConfig.precacheAll"><br /><br />
+
+                            <label for="bgConfigPath">Path</label><br />
+                            <input type="text" id="bgConfigPath" ng-model="bgConfig.path"><br /><br />
+
+                            <label for="">Slides</label><br />
+                            <div ng-repeat="slide in bgConfig.slides">
+                                <input type="text" ng-model="slide"><a href="#" class="mac-key" ng-click="bgConfig.slides.splice($index,1)">X</a>
+                            </div>
+                            <input type="text" ng-click="">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="backgroundzator.js" ></script>
+        <script>
+            var bgObj;
+            function bgInit() {
+                bgObj = new Backgroundzator("#background-container")
+            }
+            bgInit();
+        </script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+        <script>
+            angular.module("backgroundzator-demo",[]).controller("backgroundzator-controller",['$scope',function($scope) {
+                window.scope = $scope;
+                $scope.toggleEffectNone = function() {
+                    $scope.activeFx.Blurry = false;
+                    $scope.activeFx.Unblur = false;
+                    $scope.activeFx.Zoomy  = false;
+                }
+                $scope.toggleEffectBlurry = function() {
+                    $scope.activeFx.Blurry = !$scope.activeFx.Blurry;
+                    $scope.activeFx.Unblur = false;
+                }
+                $scope.toggleEffectZoomy = function() {
+                    $scope.activeFx.Zoomy = !$scope.activeFx.Zoomy;
+                }
+                $scope.toggleEffectUnblur = function() {
+                    $scope.activeFx.Unblur = !$scope.activeFx.Unblur;
+                    $scope.activeFx.Blurry = false;
+                }
+
+                $scope.activeFx = {
+                    Blurry:false,
+                    Zoomy:false,
+                    Unblur:false
+                }
+
+                $scope.$watch('activeFx',function() {
+                    $scope.activeFxClassList = "";
+                    if ($scope.activeFx.Blurry) $scope.activeFxClassList += " background-blurry";
+                    if ($scope.activeFx.Unblur) $scope.activeFxClassList += " background-unblur";
+                    if ($scope.activeFx.Zoomy) $scope.activeFxClassList += " background-zoomy";
+                }, true)
+
+                $scope.activeFxClassList = "";
+                $scope.bgFilter = "";
+                $scope.phantomPanels = "";
+                $scope.configModal = "";
+
+            }])
+        </script>
+    </body>
+</html>
